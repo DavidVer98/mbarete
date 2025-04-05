@@ -22,9 +22,11 @@
     "@tamagui/animations-react-native": "^1.125.26",
     "@tamagui/babel-plugin": "^1.125.26",
     "@tamagui/config": "^1.125.26",
-    "@tamagui/font-inter": "^1.125.26",
+    "@tamagui/font-inter": "^1.125.31",
     "@tamagui/lucide-icons": "^1.123.13",
-    "@tamagui/themes": "^1.125.26",
+    "@tamagui/react-native-media-driver": "^1.125.31",
+    "@tamagui/shorthands": "^1.125.31",
+    "@tamagui/themes": "^1.125.31",
     "axios": "^1.8.4",
     "eslint-plugin-expo": "^0.1.0",
     "expo": "~52.0.40",
@@ -53,7 +55,7 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "sonner-native": "^0.17.0",
-    "tamagui": "^1.125.26",
+    "tamagui": "^1.125.31",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

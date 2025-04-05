@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import { ScrollView, ActivityIndicator } from 'react-native'
+import React, { useState } from 'react'
+import { ScrollView } from 'react-native'
 import { YStack, XStack, Text, Button, Card, Image } from 'tamagui'
-
-// import { useRouter } from 'expo-router'
 import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons'
 import { LinearGradient } from 'expo-linear-gradient'
 import MenuHeader from '@/components/MenuHeader'
 import { exerciseProgressLogApi } from '../../api/exerciseProgressLog'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { AnimatePresence } from 'tamagui'
+import ErrorScreen from '@/components/ErrorScreen'
+import { HomeScreenSkeleton } from '@/components/SkeletonLoader'
+import { useFocusEffect } from '@react-navigation/native'
 
 export default function HomeScreen() {
   interface MonthlyStats {
@@ -22,44 +23,73 @@ export default function HomeScreen() {
     };
   }
 
-
   const [monthlyStats, setMonthlyStats] = useState<MonthlyStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<unknown>(null)
   const insets = useSafeAreaInsets()
-  // const router = useRouter()
 
-  useEffect(() => {
-    async function fetchMonthlyStats() {
-      try {
-        const stats = await exerciseProgressLogApi.getMonthlyStats()
-        setMonthlyStats(stats)
-      } catch (err) {
-        setError(err)
-      } finally {
-        setLoading(false)
+  useFocusEffect(
+    React.useCallback(() => {
+      let isActive = true
+      async function fetchMonthlyStats() {
+        try {
+          const stats = await exerciseProgressLogApi.getMonthlyStats()
+          if (isActive) {
+            setMonthlyStats(stats)
+          }
+        } catch (err) {
+          if (isActive) {
+            setError(err)
+          }
+        } finally {
+          if (isActive) {
+            setLoading(false)
+          }
+        }
       }
+      fetchMonthlyStats()
+      return () => {
+        isActive = false
+      }
+    }, [])
+  )
+
+  const handleRetry = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const stats = await exerciseProgressLogApi.getMonthlyStats()
+      setMonthlyStats(stats)
+    } catch (err) {
+      setError(err)
+    } finally {
+      setLoading(false)
     }
-    fetchMonthlyStats()
-  }, [])
+  }
 
   if (loading) {
     return (
-      <YStack flex={1} style={{ justifyContent: "center", alignItems: "center", backgroundColor: "$background" }}>
-        <ActivityIndicator size="large" color="#7B1FA2" />
+      <YStack flex={1} bg="$background">
+        <MenuHeader />
+        <HomeScreenSkeleton />
       </YStack>
     )
   }
 
   if (error) {
     return (
-      <YStack flex={1} style={{ justifyContent: "center", alignItems: "center", backgroundColor: "$background" }}>
-        <Text color="$color">Error: {error}</Text>
+      <YStack flex={1} bg="$background">
+        <MenuHeader />
+        <ErrorScreen onRetry={handleRetry} />
       </YStack>
     )
   }
 
   const currentStreak = 5
+
+  const getDayText = (days: number) => {
+    return days === 1 ? 'día' : 'días'
+  }
 
   // Placeholder for next workout suggestion
   const nextWorkout = {
@@ -82,7 +112,7 @@ export default function HomeScreen() {
       size="$4"
       bordered
       flex={1}
-      animation="bouncy"
+      // animation="bouncy"
       scale={0.95}
       hoverStyle={{ scale: 0.97 }}
       pressStyle={{ scale: 0.93 }}
@@ -138,7 +168,7 @@ export default function HomeScreen() {
                   <XStack style={{ alignItems: "center" }} space="$2">
                     <FontAwesome5 name="fire" size={18} color="#FFC107" />
                     <Text color="white" opacity={0.9} fontSize={16}>
-                      Racha de {currentStreak} días
+                      Racha de {currentStreak} {getDayText(currentStreak)}
                     </Text>
                   </XStack>
                 </YStack>
@@ -147,7 +177,6 @@ export default function HomeScreen() {
                   size="$4"
                   pressStyle={{ opacity: 0.8 }}
                   icon={<Ionicons name="play" size={16} color="white" />}
-                // onPress={() => router.push('/workout/start')}
                 >
                   <Text color="white" fontSize={16}>
                     Entrenar
@@ -244,7 +273,7 @@ export default function HomeScreen() {
                   />
                   <StatCard
                     icon={<MaterialCommunityIcons name="trophy" size={24} color="white" />}
-                    value={monthlyStats.mostFrequentExercise.name}
+                    value={monthlyStats.mostFrequentExercise?.name ?? 'No hay datos'}
                     label="Ejercicio Favorito"
                     gradient={['#D84315', '#E64A19']}
                   />
