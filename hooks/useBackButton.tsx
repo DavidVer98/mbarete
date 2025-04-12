@@ -13,10 +13,7 @@ export function useBackButton(callback: () => void, dependencies: React.Dependen
       return true // Prevents default behavior (exiting the app)
     }
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    )
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction)
 
     return () => backHandler.remove() // Clean up when component unmounts
   }, [callback, ...dependencies])

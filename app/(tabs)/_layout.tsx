@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router'
 import { useAuth } from '../../hooks/AuthContext'
-import { Home, ListTodo, Dumbbell } from "@tamagui/lucide-icons"
+import { Home, ListTodo, Dumbbell } from '@tamagui/lucide-icons'
 import { useEffect } from 'react'
 import { router } from 'expo-router'
 import { HeaderMenu } from '../../components/HeaderMenu'
@@ -10,15 +10,15 @@ import { Theme, ThemeableStack } from 'tamagui'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 // Create a wrapper component for Tamagui icons in tab bar
-const TabBarIcon = ({ 
-  Icon, 
-  color, 
-  size 
-}: { 
+const TabBarIcon = ({
+  Icon,
+  color,
+  size,
+}: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Icon: any, 
-  color: string, 
-  size: number 
+  Icon: any
+  color: string
+  size: number
 }) => {
   // Use $color syntax for dynamic colors in Tamagui
   return (
@@ -42,7 +42,7 @@ const FloatingButton = ({ onPress }: { onPress: () => void }) => {
         borderRadius: 32,
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
           width: 0,
           height: 2,
@@ -82,7 +82,7 @@ export default function TabsLayout() {
           tabBarInactiveTintColor: '#6b7280',
           headerStyle: {
             backgroundColor: colorScheme === 'dark' ? '#711c9e' : 'white',
-            height: 80
+            height: 80,
           },
           headerShadowVisible: false,
           tabBarStyle: {
@@ -100,9 +100,7 @@ export default function TabsLayout() {
             title: 'Inicio',
             headerShown: false,
             headerTitle: '',
-            tabBarIcon: ({ color, size }) => (
-              <TabBarIcon Icon={Home} color={color} size={size} />
-            ),
+            tabBarIcon: ({ color, size }) => <TabBarIcon Icon={Home} color={color} size={size} />,
           }}
         />
         <Tabs.Screen
@@ -122,9 +120,7 @@ export default function TabsLayout() {
           options={{
             title: '',
             headerShown: false,
-            tabBarButton: () => (
-              <FloatingButton onPress={handleStartWorkout} />
-            ),
+            tabBarButton: () => <FloatingButton onPress={handleStartWorkout} />,
           }}
         />
 
@@ -148,7 +144,7 @@ export default function TabsLayout() {
             ),
           }}
         />
-        {/* <Tabs.Screen
+        <Tabs.Screen
           name="routine/[id]"
           options={{
             href: null, // Esta opción evita que se genere como destino de navegación en la UI
@@ -163,7 +159,7 @@ export default function TabsLayout() {
           }}
         />
 
-        <Tabs.Screen
+        {/* <Tabs.Screen
           name="workout/[id]"
           options={{
             title: '',

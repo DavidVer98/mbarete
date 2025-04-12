@@ -13,14 +13,14 @@ import { useFocusEffect } from '@react-navigation/native'
 
 export default function HomeScreen() {
   interface MonthlyStats {
-    totalWorkouts: number;
-    totalExercises: number;
-    totalWeight: number;
-    totalReps: number;
-    personalRecords: number;
+    totalWorkouts: number
+    totalExercises: number
+    totalWeight: number
+    totalReps: number
+    personalRecords: number
     mostFrequentExercise: {
-      name: string;
-    };
+      name: string
+    }
   }
 
   const [monthlyStats, setMonthlyStats] = useState<MonthlyStats | null>(null)
@@ -93,20 +93,25 @@ export default function HomeScreen() {
 
   // Placeholder for next workout suggestion
   const nextWorkout = {
-    name: "Upper Body Strength",
-    duration: "45 min",
+    name: 'Upper Body Strength',
+    duration: '45 min',
     exercises: 8,
-    image: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=2070"
+    image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=2070',
   }
 
   interface StatCardProps {
-    icon: React.ReactNode;
-    value: string | number;
-    label: string;
-    gradient?: [string, string];
+    icon: React.ReactNode
+    value: string | number
+    label: string
+    gradient?: [string, string]
   }
 
-  const StatCard = ({ icon, value, label, gradient = ['#4A148C', '#7B1FA2'] as [string, string] }: StatCardProps) => (
+  const StatCard = ({
+    icon,
+    value,
+    label,
+    gradient = ['#4A148C', '#7B1FA2'] as [string, string],
+  }: StatCardProps) => (
     <Card
       elevate
       size="$4"
@@ -130,10 +135,10 @@ export default function HomeScreen() {
         }}
       >
         {icon}
-        <Text color="white" fontSize={24} fontWeight="bold" style={{ marginTop: "$2" }}>
+        <Text color="white" fontSize={24} fontWeight="bold" style={{ marginTop: '$2' }}>
           {value}
         </Text>
-        <Text color="white" opacity={0.8} fontSize={14} style={{ textAlign: "center" }}>
+        <Text color="white" opacity={0.8} fontSize={14} style={{ textAlign: 'center' }}>
           {label}
         </Text>
       </LinearGradient>
@@ -160,12 +165,12 @@ export default function HomeScreen() {
                 borderRadius: 16,
               }}
             >
-              <XStack style={{ alignItems: "center", justifyContent: "space-between" }}>
+              <XStack style={{ alignItems: 'center', justifyContent: 'space-between' }}>
                 <YStack space="$2">
                   <Text color="white" fontSize={28} fontWeight="bold">
                     ¡Hola! 👋
                   </Text>
-                  <XStack style={{ alignItems: "center" }} space="$2">
+                  <XStack style={{ alignItems: 'center' }} space="$2">
                     <FontAwesome5 name="fire" size={18} color="#FFC107" />
                     <Text color="white" opacity={0.9} fontSize={16}>
                       Racha de {currentStreak} {getDayText(currentStreak)}
@@ -173,7 +178,7 @@ export default function HomeScreen() {
                   </XStack>
                 </YStack>
                 <Button
-                  style={{ backgroundColor: "#FFFFFF30", borderRadius: "$6" }}
+                  style={{ backgroundColor: '#FFFFFF30', borderRadius: '$6' }}
                   size="$4"
                   pressStyle={{ opacity: 0.8 }}
                   icon={<Ionicons name="play" size={16} color="white" />}
@@ -216,7 +221,9 @@ export default function HomeScreen() {
               </Text>
               <Button
                 style={{
-                  marginTop: "$3", backgroundColor: "#FFFFFF20", borderRadius: "$4"
+                  marginTop: '$3',
+                  backgroundColor: '#FFFFFF20',
+                  borderRadius: '$4',
                 }}
                 width={120}
                 pressStyle={{ opacity: 0.8 }}

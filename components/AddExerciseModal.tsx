@@ -1,27 +1,23 @@
-import { Sheet, Button, Input, Label, YStack, Text, Select } from "tamagui"
-import { useState } from "react"
+import { Sheet, Button, Input, Label, YStack, Text, Select } from 'tamagui'
+import { useState } from 'react'
 
 interface AddExerciseModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onAddExercise: (exercise: {
-    name: string
-    description: string
-    muscleGroup: string
-  }) => void
+  onAddExercise: (exercise: { name: string; description: string; muscleGroup: string }) => void
 }
 
 export function AddExerciseModal({ open, onOpenChange, onAddExercise }: AddExerciseModalProps) {
-  const [name, setName] = useState("")
-  const [description, setDescription] = useState("")
-  const [muscleGroup, setMuscleGroup] = useState("")
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const [muscleGroup, setMuscleGroup] = useState('')
 
   const handleSubmit = () => {
     if (name && description && muscleGroup) {
       onAddExercise({ name, description, muscleGroup })
-      setName("")
-      setDescription("")
-      setMuscleGroup("")
+      setName('')
+      setDescription('')
+      setMuscleGroup('')
       onOpenChange(false)
     }
   }
@@ -44,7 +40,9 @@ export function AddExerciseModal({ open, onOpenChange, onAddExercise }: AddExerc
           </Text>
 
           <YStack space="$2">
-            <Label htmlFor="name" color="$color">Nombre del ejercicio</Label>
+            <Label htmlFor="name" color="$color">
+              <Text>Nombre del ejercicio</Text>
+            </Label>
             <Input
               id="name"
               value={name}
@@ -55,7 +53,9 @@ export function AddExerciseModal({ open, onOpenChange, onAddExercise }: AddExerc
           </YStack>
 
           <YStack space="$2">
-            <Label htmlFor="description" color="$color">Descripción</Label>
+            <Label htmlFor="description" color="$color">
+              <Text>Descripción</Text>
+            </Label>
             <Input
               id="description"
               value={description}
@@ -67,15 +67,12 @@ export function AddExerciseModal({ open, onOpenChange, onAddExercise }: AddExerc
             />
           </YStack>
 
-          <YStack space="$2">
-            <Label htmlFor="muscleGroup" color="$color">Grupo muscular</Label>
-            <Select
-              id="muscleGroup"
-              value={muscleGroup}
-              onValueChange={setMuscleGroup}
-              backgroundColor="$gray5"
-            >
-              <Select.Trigger>
+          <YStack>
+            <Label htmlFor="muscleGroup" color="$color">
+              <Text>Grupo muscular</Text>
+            </Label>
+            <Select id="muscleGroup" value={muscleGroup} onValueChange={setMuscleGroup}>
+              <Select.Trigger backgroundColor="$gray5">
                 <Select.Value placeholder="Selecciona grupo muscular" />
               </Select.Trigger>
 
@@ -84,19 +81,29 @@ export function AddExerciseModal({ open, onOpenChange, onAddExercise }: AddExerc
                 <Select.Viewport>
                   <Select.Group>
                     <Select.Item value="pecho" index={0}>
-                      <Select.ItemText>Pecho</Select.ItemText>
+                      <Select.ItemText>
+                        <Text>Pecho</Text>
+                      </Select.ItemText>
                     </Select.Item>
                     <Select.Item value="espalda" index={1}>
-                      <Select.ItemText>Espalda</Select.ItemText>
+                      <Select.ItemText>
+                        <Text>Espalda</Text>
+                      </Select.ItemText>
                     </Select.Item>
                     <Select.Item value="piernas" index={2}>
-                      <Select.ItemText>Piernas</Select.ItemText>
+                      <Select.ItemText>
+                        <Text>Piernas</Text>
+                      </Select.ItemText>
                     </Select.Item>
                     <Select.Item value="hombros" index={3}>
-                      <Select.ItemText>Hombros</Select.ItemText>
+                      <Select.ItemText>
+                        <Text>Hombros</Text>
+                      </Select.ItemText>
                     </Select.Item>
                     <Select.Item value="brazos" index={4}>
-                      <Select.ItemText>Brazos</Select.ItemText>
+                      <Select.ItemText>
+                        <Text>Brazos</Text>
+                      </Select.ItemText>
                     </Select.Item>
                   </Select.Group>
                 </Select.Viewport>
@@ -111,7 +118,7 @@ export function AddExerciseModal({ open, onOpenChange, onAddExercise }: AddExerc
             color="white"
             disabled={!name || !description || !muscleGroup}
           >
-            Añadir Ejercicio
+            <Text>Añadir Ejercicio</Text>
           </Button>
         </YStack>
       </Sheet.Frame>
