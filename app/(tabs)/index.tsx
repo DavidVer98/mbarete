@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { ScrollView } from 'react-native'
-import { YStack, XStack, Text, Button, Card, Image } from 'tamagui'
+import { ScrollView, Pressable } from 'react-native'
+import { YStack, XStack, Text, Button, Card, Image, styled } from 'tamagui'
 import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons'
 import { LinearGradient } from 'expo-linear-gradient'
 import MenuHeader from '@/components/MenuHeader'
@@ -10,6 +10,74 @@ import { AnimatePresence } from 'tamagui'
 import ErrorScreen from '@/components/ErrorScreen'
 import { HomeScreenSkeleton } from '@/components/SkeletonLoader'
 import { useFocusEffect } from '@react-navigation/native'
+import { useRouter } from 'expo-router'
+
+const StatCard = styled(Card, {
+  backgroundColor: '$background',
+  borderRadius: 12,
+  padding: 12,
+  flex: 1,
+  borderWidth: 1,
+  borderColor: 'rgba(128, 128, 128, 0.1)',
+})
+
+const WelcomeCard = styled(Card, {
+  backgroundColor: 'transparent',
+  borderRadius: 16,
+  overflow: 'hidden',
+  borderWidth: 2,
+  borderColor: 'rgba(0, 178, 131, 0.5)',
+  shadowColor: '#00b283',
+  shadowOffset: { width: 0, height: 0 },
+  shadowOpacity: 0.6,
+  shadowRadius: 10,
+  elevation: 5,
+})
+
+const NeonGradient: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <LinearGradient
+    colors={['#121212', '#101a1c', '#091d1a']}
+    start={{ x: 0, y: 0 }}
+    end={{ x: 1, y: 1 }}
+    style={{
+      padding: 20,
+      borderRadius: 16,
+      position: 'relative',
+      overflow: 'hidden',
+    }}
+  >
+    <LinearGradient
+      colors={['rgba(0, 178, 131, 0.3)', 'rgba(0, 151, 167, 0.1)', 'rgba(0, 119, 182, 0.2)']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        borderRadius: 16,
+      }}
+    />
+    <YStack style={{ position: 'relative', zIndex: 2 }}>{children}</YStack>
+  </LinearGradient>
+)
+
+const WorkoutCard = styled(Card, {
+  backgroundColor: '$background',
+  borderRadius: 12,
+  height: 200,
+  overflow: 'hidden',
+  borderWidth: 1,
+  borderColor: 'rgba(128, 128, 128, 0.1)',
+})
+
+const ActionButton = styled(Button, {
+  borderRadius: 12,
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  backgroundColor: '#00b283',
+})
 
 export default function HomeScreen() {
   interface MonthlyStats {
@@ -27,6 +95,7 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<unknown>(null)
   const insets = useSafeAreaInsets()
+  const router = useRouter()
 
   useFocusEffect(
     React.useCallback(() => {
@@ -99,107 +168,126 @@ export default function HomeScreen() {
     image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=2070',
   }
 
-  interface StatCardProps {
+  interface StatItemProps {
     icon: React.ReactNode
     value: string | number
     label: string
-    gradient?: [string, string]
   }
 
-  const StatCard = ({
-    icon,
-    value,
-    label,
-    gradient = ['#4A148C', '#7B1FA2'] as [string, string],
-  }: StatCardProps) => (
-    <Card
-      elevate
-      size="$4"
-      bordered
-      flex={1}
-      // animation="bouncy"
-      scale={0.95}
-      hoverStyle={{ scale: 0.97 }}
-      pressStyle={{ scale: 0.93 }}
-    >
-      <LinearGradient
-        colors={gradient}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={{
-          padding: 16,
-          borderRadius: 12,
-          height: '100%',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
+  const StatItem = ({ icon, value, label }: StatItemProps) => (
+    <StatCard>
+      <Pressable
+        style={({ pressed }) => ({
+          opacity: pressed ? 0.9 : 1,
+          transform: [{ scale: pressed ? 0.98 : 1 }],
+        })}
       >
-        {icon}
-        <Text color="white" fontSize={24} fontWeight="bold" style={{ marginTop: '$2' }}>
-          {value}
-        </Text>
-        <Text color="white" opacity={0.8} fontSize={14} style={{ textAlign: 'center' }}>
-          {label}
-        </Text>
-      </LinearGradient>
-    </Card>
+        <YStack alignItems="center" space="$2" padding="$2">
+          <XStack
+            backgroundColor="#00b28320"
+            borderRadius={40}
+            width={50}
+            height={50}
+            alignItems="center"
+            justifyContent="center"
+          >
+            {icon}
+          </XStack>
+          <Text fontSize={22} fontWeight="bold" color="$color">
+            {value}
+          </Text>
+          <Text fontSize={14} color="#9CA3AF" textAlign="center">
+            {label}
+          </Text>
+        </YStack>
+      </Pressable>
+    </StatCard>
   )
 
   return (
-    <YStack flex={1} bg="$background">
+    <YStack flex={1} backgroundColor="$background">
       <MenuHeader />
       <ScrollView
-        contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
-        style={{ backgroundColor: '$background' }}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 20 }}
         showsVerticalScrollIndicator={false}
       >
         {/* Welcome Banner */}
-        <YStack p="$4" space="$5">
-          <Card overflow="hidden" bordered borderRadius="$6">
-            <LinearGradient
-              colors={['#5E35B1', '#3949AB']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{
-                padding: 20,
-                borderRadius: 16,
-              }}
-            >
-              <XStack style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+        <YStack padding="$4" space="$4">
+          <WelcomeCard animation="bouncy">
+            <NeonGradient>
+              <XStack alignItems="center" justifyContent="space-between">
                 <YStack space="$2">
-                  <Text color="white" fontSize={28} fontWeight="bold">
+                  <Text
+                    color="white"
+                    fontSize={28}
+                    fontWeight="bold"
+                    style={{
+                      textShadowColor: '#00b283',
+                      textShadowOffset: { width: 0, height: 0 },
+                      textShadowRadius: 10,
+                    }}
+                  >
                     ¡Hola! 👋
                   </Text>
-                  <XStack style={{ alignItems: 'center' }} space="$2">
-                    <FontAwesome5 name="fire" size={18} color="#FFC107" />
-                    <Text color="white" opacity={0.9} fontSize={16}>
+                  <XStack alignItems="center" space="$2">
+                    <FontAwesome5 name="fire" size={18} color="#00ffbb" />
+                    <Text
+                      color="rgba(255, 255, 255, 0.9)"
+                      fontSize={16}
+                      style={{
+                        textShadowColor: 'rgba(0, 255, 187, 0.5)',
+                        textShadowOffset: { width: 0, height: 0 },
+                        textShadowRadius: 5,
+                      }}
+                    >
                       Racha de {currentStreak} {getDayText(currentStreak)}
                     </Text>
                   </XStack>
                 </YStack>
-                <Button
-                  style={{ backgroundColor: '#FFFFFF30', borderRadius: '$6' }}
-                  size="$4"
-                  pressStyle={{ opacity: 0.8 }}
-                  icon={<Ionicons name="play" size={16} color="white" />}
+                <ActionButton
+                  pressStyle={{
+                    opacity: 0.8,
+                    scale: 0.97,
+                    backgroundColor: '#00d6a1',
+                  }}
+                  onPress={() => router.push('/(tabs)/today-workout')}
+                  animation="quick"
+                  style={{
+                    shadowColor: '#00ffbb',
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowOpacity: 0.8,
+                    shadowRadius: 8,
+                    elevation: 6,
+                  }}
                 >
-                  <Text color="white" fontSize={16}>
-                    Entrenar
-                  </Text>
-                </Button>
+                  <XStack space="$2" alignItems="center">
+                    <Ionicons name="play" size={16} color="white" />
+                    <Text
+                      color="white"
+                      fontSize={16}
+                      style={{
+                        textShadowColor: 'rgba(0, 178, 131, 0.7)',
+                        textShadowOffset: { width: 0, height: 0 },
+                        textShadowRadius: 5,
+                      }}
+                    >
+                      Entrenar
+                    </Text>
+                  </XStack>
+                </ActionButton>
               </XStack>
-            </LinearGradient>
-          </Card>
+            </NeonGradient>
+          </WelcomeCard>
 
           {/* Next Workout Suggestion */}
-          <Card overflow="hidden" bordered borderRadius="$6" height={200}>
+          <WorkoutCard>
             <Image
               source={{ uri: nextWorkout.image }}
               style={{
                 position: 'absolute',
                 width: '100%',
                 height: '100%',
-                borderRadius: 16,
               }}
               resizeMode="cover"
             />
@@ -220,69 +308,65 @@ export default function HomeScreen() {
                 {nextWorkout.name} • {nextWorkout.duration} • {nextWorkout.exercises} ejercicios
               </Text>
               <Button
-                style={{
-                  marginTop: '$3',
-                  backgroundColor: '#FFFFFF20',
-                  borderRadius: '$4',
-                }}
-                width={120}
+                backgroundColor="#00b283"
+                marginTop="$3"
+                borderRadius={12}
+                paddingVertical={8}
+                paddingHorizontal={16}
+                width={140}
                 pressStyle={{ opacity: 0.8 }}
               >
                 <Text color="white">Ver Detalles</Text>
               </Button>
             </LinearGradient>
-          </Card>
+          </WorkoutCard>
 
           {/* Monthly Stats Section */}
           {monthlyStats && (
             <AnimatePresence>
               <YStack space="$4" enterStyle={{ opacity: 0, y: 10 }} animation="quick">
-                <Text fontSize={22} fontWeight="bold">
+                <Text fontSize={20} fontWeight="bold" color="$color">
                   Progreso Mensual
                 </Text>
 
-                <XStack space="$3" height={120}>
-                  <StatCard
-                    icon={<MaterialCommunityIcons name="weight-lifter" size={24} color="white" />}
+                <XStack space="$3">
+                  <StatItem
+                    icon={<MaterialCommunityIcons name="weight-lifter" size={24} color="#00b283" />}
                     value={monthlyStats.totalWorkouts}
                     label="Workouts Completados"
-                    gradient={['#5E35B1', '#3949AB']}
                   />
-                  <StatCard
-                    icon={<MaterialCommunityIcons name="dumbbell" size={24} color="white" />}
+                  <StatItem
+                    icon={<MaterialCommunityIcons name="dumbbell" size={24} color="#00b283" />}
                     value={monthlyStats.totalExercises}
                     label="Ejercicios"
-                    gradient={['#7B1FA2', '#512DA8']}
                   />
                 </XStack>
 
-                <XStack space="$3" height={120}>
-                  <StatCard
-                    icon={<MaterialCommunityIcons name="weight-kilogram" size={24} color="white" />}
+                <XStack space="$3">
+                  <StatItem
+                    icon={
+                      <MaterialCommunityIcons name="weight-kilogram" size={24} color="#00b283" />
+                    }
                     value={`${monthlyStats.totalWeight} kg`}
                     label="Peso Total"
-                    gradient={['#00897B', '#00695C']}
                   />
-                  <StatCard
-                    icon={<MaterialCommunityIcons name="repeat" size={24} color="white" />}
+                  <StatItem
+                    icon={<MaterialCommunityIcons name="repeat" size={24} color="#00b283" />}
                     value={monthlyStats.totalReps}
                     label="Repeticiones"
-                    gradient={['#00ACC1', '#0097A7']}
                   />
                 </XStack>
 
-                <XStack space="$3" height={120}>
-                  <StatCard
-                    icon={<MaterialCommunityIcons name="star" size={24} color="white" />}
+                <XStack space="$3">
+                  <StatItem
+                    icon={<MaterialCommunityIcons name="star" size={24} color="#00b283" />}
                     value={monthlyStats.personalRecords}
                     label="Records Personales"
-                    gradient={['#F57C00', '#FF8F00']}
                   />
-                  <StatCard
-                    icon={<MaterialCommunityIcons name="trophy" size={24} color="white" />}
+                  <StatItem
+                    icon={<MaterialCommunityIcons name="trophy" size={24} color="#00b283" />}
                     value={monthlyStats.mostFrequentExercise?.name ?? 'No hay datos'}
                     label="Ejercicio Favorito"
-                    gradient={['#D84315', '#E64A19']}
                   />
                 </XStack>
               </YStack>
